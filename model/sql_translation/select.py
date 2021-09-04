@@ -1,18 +1,13 @@
 import nltk
-#nltk.download('punkt')
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords 
+from nltk.stem import PorterStemmer
+
 
 #불필요한 단어를 제거해주는 함수
 def se_simplify(any_list):
-    import nltk
-    # nltk.download('stopwords')
-
-    from nltk.corpus import stopwords 
-    from nltk.tokenize import word_tokenize 
-
 
     stop_words = set(stopwords.words('english'))
-
 
     result = []
     for token in any_list: 
@@ -22,14 +17,12 @@ def se_simplify(any_list):
     return result
 
 
-
 #복수를 단수로 바꿔주는 함수
 def se_stemming(any_list):
-    from nltk.stem import PorterStemmer
     s=PorterStemmer()
-  
     re = [s.stem(w) for w in any_list]
     return re
+
 
 # 분류_value 찾기
 def se_find_category_value (any_list):
@@ -70,21 +63,21 @@ def se_find_condition (any_list):
         elif(any_list[i] == 'origin' or any_list[i] == 'from'):
             re = 'origin'  
 
-        
     return re
+
+
+
 
 #price의 value 값을 탐색 
 def se_find_price_value (any_list):
     re = 'NAN'
     re_comma = 'NAN'
 
-
     for i in range(0, len(any_list)):
         if(any_list[i] == 'less'):
             re_comma = any_list[i+1]
             re = re_comma.replace(',','')
 
- 
     if(re == 'NAN'):
         re = 'superlative'
       
@@ -103,10 +96,6 @@ def se_find_rating_value (any_list):
             re = any_list[i]
 
     return re
-
-      
-    
-
 
 
 #number_of_ratings의 value 값을 탐색 
@@ -127,8 +116,6 @@ def se_find_number_of_reviews_value (any_list):
     return re
 
 
-
-
 #origin의 value 값을 탐색 
 def se_find_origin_value (any_list):
     re = 'NAN'
@@ -145,7 +132,6 @@ def se_find_origin_value (any_list):
     return re
 
 
-
 #brand의 value 값을 탐색 
 def se_find_brand_value (any_list):
     re = 'NAN'
@@ -157,6 +143,7 @@ def se_find_brand_value (any_list):
                 break
 
     return re
+
 
 #조건의 value 값을 탐색 -> column의 value 값을 찾는 것임
 def se_find_condition_value (any_list, condition):
@@ -172,6 +159,7 @@ def se_find_condition_value (any_list, condition):
     elif(condition == 'brand'):
         re = se_find_brand_value(any_list)
     return re
+
 
 #조건 sql 내보내는 함수
 def select_where (some_list_stemming, some_list_simplify):
@@ -196,10 +184,10 @@ def select_where (some_list_stemming, some_list_simplify):
   
     return sql_result
 
+
 # 조건이 1개일때
 def select_one_func(some_list):
   
-          
     some_list_stemming = se_stemming(some_list)
     some_list_simplify = se_simplify(some_list_stemming)
   
@@ -209,16 +197,14 @@ def select_one_func(some_list):
 
     where_1 = select_where(some_list_stemming, some_list_simplify)
 
-
     sql_result = "SELECT * FROM product WHERE " + cate + " = '" + cate_value + "'" + where_1
 
-
     return sql_result
+
 
 # 조건이 1개일때
 def select_one_count_func(some_list):
   
-          
     some_list_stemming = se_stemming(some_list)
     some_list_simplify = se_simplify(some_list_stemming)
 
@@ -228,11 +214,10 @@ def select_one_count_func(some_list):
 
     where_1 = select_where(some_list_stemming, some_list_simplify)
 
-
     sql_result = "SELECT COUNT(*) FROM product WHERE " + cate + " = '" + cate_value + "'" + where_1
 
-
     return sql_result
+
 
 # 조건이 2개일때
 def select_two_func(some_list):
@@ -242,8 +227,6 @@ def select_two_func(some_list):
             A = some_list[0:i]
             B = some_list[i+1:len(some_list)] 
     
-  
-
     A_stemming = se_stemming(A)
     A_simplify = se_simplify(A_stemming)
 
@@ -257,12 +240,11 @@ def select_two_func(some_list):
     where_1 = select_where(A_stemming, A_simplify)
     where_2 = select_where(B_stemming, B_simplify)
 
-
-
     sql_result = "SELECT * FROM product WHERE " + cate + " = '" + cate_value + "'" + where_1 + where_2
 
-
     return sql_result
+
+
 
 # 조건이 2개일때
 def select_two_count_func(some_list):
@@ -272,8 +254,6 @@ def select_two_count_func(some_list):
             A = some_list[0:i]
             B = some_list[i+1:len(some_list)] 
     
-  
-
     A_stemming = se_stemming(A)
     A_simplify = se_simplify(A_stemming)
 
@@ -287,12 +267,10 @@ def select_two_count_func(some_list):
     where_1 = select_where(A_stemming, A_simplify)
     where_2 = select_where(B_stemming, B_simplify)
 
-
-
     sql_result = "SELECT COUNT(*) FROM product WHERE " + cate + " = '" + cate_value + "'" + where_1 + where_2
 
-
     return sql_result
+
 
 #error 확인
 def error_msg(se_sql):
@@ -301,6 +279,7 @@ def error_msg(se_sql):
         re = 'error'
     
     return re
+
 
 def select_func(some_list):
     for i in range(0, len(some_list)):
@@ -316,6 +295,7 @@ def select_func(some_list):
     else:
         return sql
 
+
 def select_count_func(some_list):
     for i in range(0, len(some_list)):
         if(some_list[i]=='and'):
@@ -329,5 +309,3 @@ def select_count_func(some_list):
         return error_check
     else:
         return sql
-
-
