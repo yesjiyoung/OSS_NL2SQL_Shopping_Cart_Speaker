@@ -52,26 +52,21 @@ conn = pymysql.connect(host="localhost", user="root", password="tkskaao", db="ma
 curs = conn.cursor()
 
 from pygame import mixer
-# mixer.init()
-# mixer.music.load("N01.MP3")
-# mixer.music.play()
-# time.sleep(7.02688)
 
 ## nltk ## 
 import nltk
-#nltk.download('punkt')
 from nltk.tokenize import word_tokenize
 
 ##nl2sql##
-from nl2sql.select import select_count_func
-#from nl2sql.insert import insert_func
+from model.sql_translation.select import select_count_func, select_func
+from model.sql_translation.update import update_func
+from model.sql_translation.insert import insert_func
+from model.sql_translation.delete import delete_func
+
 ## translation api ## 
 from google.cloud import translate_v2 as translate
 client_trans = translate.Client()
-from demo_model_code.demo_select import select_func
-from demo_model_code.demo_update import update_func
-from demo_model_code.demo_insert import insert_func
-from demo_model_code.demo_delete import delete_func
+
 ##text-to-speech##
 from google.cloud import texttospeech
 voice_eng = texttospeech.VoiceSelectionParams(language_code='en-US', ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL) # types & enums 제거
@@ -81,7 +76,7 @@ client_tts = texttospeech.TextToSpeechClient()
 
 def info_about_product(sql):
     global sql_
-    sql_ =sql_with_count.replace('COUNT(*)','*')
+    sql_ = sql_with_count.replace('COUNT(*)','*')
     curs.execute(sql_)
     result = curs.fetchall()
     #conn.close()
@@ -291,7 +286,7 @@ def main():
             
             # print3 = '[SQL_to_DB] ▶ ' + str(result[0][0])
             # print(print3)
-            synthesis_input = texttospeech.SynthesisInput(text='다이어트 바나나의 수량을 2개로 변경하였습니다.') # 사기침 
+            synthesis_input = texttospeech.SynthesisInput(text='다이어트 바나나의 수량을 2개로 변경하였습니다.')
             response = client_tts.synthesize_speech(input=synthesis_input, voice=voice_kor, audio_config=audio_config)
             with open('test2_.mp3', "wb") as out:
                 # Write the response to the output file.
@@ -306,12 +301,9 @@ def main():
             curs.execute(sql)
             conn.commit()
 
-            #print3 = '[SQL_to_DB] ▶ ' + str(result[0][0])
-            #print(print3)
-            synthesis_input = texttospeech.SynthesisInput(text='네 장바구니에 담았습니다.') # 사기침 
+            synthesis_input = texttospeech.SynthesisInput(text='네 장바구니에 담았습니다.')
             response = client_tts.synthesize_speech(input=synthesis_input, voice=voice_kor, audio_config=audio_config)
             with open('test2_.mp3', "wb") as out:
-                # Write the response to the output file.
                 out.write(response.audio_content)
             mixer.init()
             mixer.music.load('test2_.mp3')
@@ -322,9 +314,7 @@ def main():
             print('[NL_2_SQL] ▶ '+ sql)
             curs.execute(sql)
             conn.commit()
-            #print3 = '[SQL_to_DB] ▶ ' + str(result[0][0])
-            #print(print3)
-            synthesis_input = texttospeech.SynthesisInput(text='네 해당 상품을 삭제하였습니다.') # 사기침 
+            synthesis_input = texttospeech.SynthesisInput(text='네 해당 상품을 삭제하였습니다.')
             response = client_tts.synthesize_speech(input=synthesis_input, voice=voice_kor, audio_config=audio_config)
             with open('test2_.mp3', "wb") as out:
                 # Write the response to the output file.
@@ -339,10 +329,7 @@ def main():
             print('[NL_2_SQL] ▶ '+ sql)
             curs.execute(sql)
             conn.commit()
-            
-            #print3 = '[SQL_to_DB] ▶ ' + str(result[0][0])
-            #print(print3)
-            synthesis_input = texttospeech.SynthesisInput(text='네 이제 장바구니가 텅텅 비었습니다! .') # 사기침 
+            synthesis_input = texttospeech.SynthesisInput(text='네 이제 장바구니가 텅텅 비었습니다! .')
             response = client_tts.synthesize_speech(input=synthesis_input, voice=voice_kor, audio_config=audio_config)
             with open('test2_.mp3', "wb") as out:
                 # Write the response to the output file.
