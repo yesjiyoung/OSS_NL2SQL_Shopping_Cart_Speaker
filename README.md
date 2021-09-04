@@ -1,2 +1,1 @@
-# OSS_project-
-# test1
+# OSS_NL2SQL_Shopping_Cart_Speaker
